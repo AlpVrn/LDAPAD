@@ -3,10 +3,10 @@ import pyodbc
 # Senin ayarların
 SQL_CONN_STR = (
     "DRIVER={SQL Server};"
-    "SERVER=172.16.114.112;"
-    "DATABASE=AcmeDB;"
+    "SERVER=SERVERIP"
+    "DATABASE=Sirket1;"
     "UID=alp.varna;"
-    "PWD=x5JQb7sn;"
+    "PWD=PASS;"
 )
 
 print("⏳ Bağlantı deneniyor...")
@@ -22,7 +22,7 @@ try:
     
     # 2. Test: Tabloyu okuyabiliyor muyuz? (Tablo yetkisi testi)
     try:
-        cursor.execute("SELECT TOP 1 * FROM ACME_ACTIVE_DIRECTORY_LDAP_PYTHON_DENEME")
+        cursor.execute("SELECT TOP 1 * AD")
         print("✅ Tablo okuma yetkisi VAR.")
     except Exception as e:
         print(f"⚠️ Tabloya erişim YOK: {e}")
@@ -39,6 +39,6 @@ except pyodbc.Error as ex:
     elif "08001" in str(sqlstate):
         print("🔴 SEBEP: Sunucuya ulaşılamıyor (IP yanlış, Firewall engelliyor veya SQL Servisi kapalı).")
     elif "4060" in str(sqlstate):
-        print("🔴 SEBEP: Kullanıcı doğru ama 'AcmeDB' veritabanına giriş yetkisi yok.")
+        print("🔴 SEBEP: Kullanıcı doğru ama 'Sirket1' veritabanına giriş yetkisi yok.")
     else:
         print(f"🔴 Detay: {ex}")
