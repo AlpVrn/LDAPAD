@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Secret config (Şifrelerin olduğu dosya)
+config.py
+
+# Excel çıktıları
+*.xlsx
+
+# Sanal ortam
+venv/
+.venv/
+
+# Loglar
+*.log

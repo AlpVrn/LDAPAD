@@ -1,0 +1,10 @@
+# LDAP yapılandırma - Kendi bilgilerine göre düzenle ve config.py olarak kaydet
+LDAP_SERVER = '127.0.0.1'
+LDAP_USER = 'user@domain.com'
+LDAP_PASSWORD = 'password'
+BASE_DN = 'dc=example,dc=com'
+
+# Web uygulaması ayarları
+FLASK_DEBUG = True
+FLASK_HOST = '0.0.0.0'
+FLASK_PORT = 5000
