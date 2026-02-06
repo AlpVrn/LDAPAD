@@ -1,8 +1,8 @@
 # LDAP yapılandırma - çalışma ortamına göre düzenle
-LDAP_SERVER = '192.168.122.217'
-LDAP_USER = 'administrator@map.tech'
-LDAP_PASSWORD = 'Alp12345.'
-BASE_DN = 'DC=map,DC=tech'
+LDAP_SERVER = '192.168.1.1' #Sunucu IP 
+LDAP_USER = '.' #UPN gelecek
+LDAP_PASSWORD = 'Alp12345.' #Admin şifresi
+BASE_DN = 'DC=map,DC=tech' #DN ler gelecek
 
 # Web uygulaması ayarları
 FLASK_DEBUG = True
