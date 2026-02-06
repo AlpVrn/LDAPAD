@@ -13,35 +13,46 @@
         {% if action=='add' %}
         <div class="mb-3">
           <label class="form-label">CN (Ad Soyad)</label>
-          <input name="cn" class="form-control">
+          <input name="cn" id="cn" class="form-control">
         </div>
+
         <div class="mb-3">
           <label class="form-label">OU (Alt OU örn: IT)</label>
-          <input name="ou" class="form-control">
+          <input name="ou" id="ou" class="form-control">
         </div>
+
         <div class="mb-3">
           <label class="form-label">sAMAccountName</label>
-          <input name="sAMAccountName" class="form-control">
+          <input name="sAMAccountName" id="sAMAccountName" class="form-control" oninput="otomatikDoldur()">
         </div>
+
         <div class="mb-3">
           <label class="form-label">Mail</label>
-          <input name="mail" class="form-control">
+          <input name="mail" id="mail" class="form-control">
         </div>
+
         <button class="btn btn-primary">Ekle</button>
         {% else %}
         <input type="hidden" name="dn" value="{{dn}}">
+
         <div class="mb-3">
           <label class="form-label">Mail</label>
-          <input name="mail" class="form-control">
+          <input name="mail" id="mail" class="form-control">
         </div>
+
         <div class="mb-3">
           <label class="form-label">Title</label>
           <input name="title" class="form-control">
         </div>
+
         <button class="btn btn-primary">Güncelle</button>
         {% endif %}
         <a class="btn btn-secondary" href="/">Geri</a>
       </form>
+
     </div>
+
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
   </html>
