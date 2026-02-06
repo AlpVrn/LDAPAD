@@ -1,9 +1,11 @@
 from ldap3 import Server, Connection, ALL, MODIFY_REPLACE, MODIFY_ADD
+import config
 
-# --- BAĞLANTI BİLGİLERİ ---
-ldap_server = 'serverIP'
-username = 'userPrincipalName'
-password = 'PASS'
+# --- BAĞLANTI BİLGİLERİ (config.py'den alınıyor) ---
+ldap_server = config.LDAP_SERVER
+username = config.LDAP_USER
+password = config.LDAP_PASSWORD
+base_dn = config.BASE_DN
 
 # --- 1. GÜNCELLENECEK KULLANICI ---
 user_cn = "mehmet Alp Varna"

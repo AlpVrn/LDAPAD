@@ -1,10 +1,12 @@
 from ldap3 import Server, Connection, ALL
 import pandas as pd  # Excel işlemi için gerekli kütüphane
+import config
 
-# --- BAĞLANTI BİLGİLERİ ---
-ldap_server = 'serverIP'
-username = 'userPrincipalName'
-password = 'PASS'
+# --- BAĞLANTI BİLGİLERİ (config.py'den alınıyor) ---
+ldap_server = config.LDAP_SERVER
+username = config.LDAP_USER
+password = config.LDAP_PASSWORD
+base_dn = config.BASE_DN
 
 # --- İSTEDİĞİN SÜTUNLAR (Sadeleştirilmiş Liste) ---
 istenen_alanlar = [

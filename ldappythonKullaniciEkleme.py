@@ -1,9 +1,11 @@
 from ldap3 import Server, Connection, ALL, MODIFY_REPLACE, MODIFY_ADD
+import config
 
-# --- BAĞLANTI BİLGİLERİ (SSL YOK) ---
-ldap_server = 'serverIP'
-username = 'userPrincipalName'
-password = 'PASS'
+# --- BAĞLANTI BİLGİLERİ (config.py'den alınıyor) ---
+ldap_server = config.LDAP_SERVER
+username = config.LDAP_USER
+password = config.LDAP_PASSWORD
+base_dn = config.BASE_DN
 
 # --- KULLANICI BİLGİLERİ ---
 cn = 'Mehmet Alp Varna'
@@ -79,7 +81,7 @@ else:
     # 2. Şifre (NOT: Burası SSL olmadığı için hata veriyor önemsiz)
     print("### 2. Şifre Atanıyor ###")
     conn.modify(user_dn, {'unicodePwd': [(MODIFY_REPLACE, [new_password])]})
-    print(f"Şifre Sonucu: {conn.result['description']}") # Burası 'unwillingToPerform' diyo
+    print(f"Şifre Sonucu: {conn.result['description']}")
     print("---")
 
     # 3. Enable Et (Şifre atanamadığı için burası da hata verebilir)

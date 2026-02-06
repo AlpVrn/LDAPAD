@@ -1,9 +1,11 @@
 from ldap3 import Server, Connection, ALL
+import config
 
-# --- BAĞLANTI BİLGİLERİ ---
-ldap_server = 'serverIP'
-username = 'userPrincipalName'
-password = 'PASS'
+# --- BAĞLANTI BİLGİLERİ (config.py'den alınıyor) ---
+ldap_server = config.LDAP_SERVER
+username = config.LDAP_USER
+password = config.LDAP_PASSWORD
+base_dn = config.BASE_DN
 
 # 📌 SİLİNECEK KULLANICI BİLGİLERİ (DİNAMİK) ---
 user_cn = "Mehmet Alp"  # Silmek istediğin kullanıcının tam CN'i (Adı)
