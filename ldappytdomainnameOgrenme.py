@@ -1,8 +1,8 @@
 from ldap3 import Server, Connection, ALL
-
-ldap_server = 'ldap://172.16.66.17'
-username = 'alp.varna@acme.mbr'
-password = 'Aa12345.'
+from config import LDAP_SERVER, LDAP_USER, LDAP_PASSWORD
+ldap_server = LDAP_SERVER
+username = LDAP_USER
+password = LDAP_PASSWORD
 server = Server(ldap_server, get_info=ALL)
 conn = Connection(server, user=username, password=password, auto_bind=True)
 

@@ -17,8 +17,17 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">OU (Alt OU örn: IT)</label>
-          <input name="ou" id="ou" class="form-control">
+          <label class="form-label">OU / Konteyner</label>
+          {% if ous %}
+          <select name="ou_select" class="form-select mb-2">
+            <option value="">-- Mevcut OU seç --</option>
+            {% for ou_dn in ous %}
+            <option value="{{ ou_dn }}">{{ ou_dn }}</option>
+            {% endfor %}
+          </select>
+          {% endif %}
+          <input name="ou_text" id="ou_text" class="form-control" placeholder="OU=AltSirket,OU=Sirket1 veya AltSirket, Sirket1">
+          <div class="form-text">OU seçin veya kendi OU yolunu yazın. Örn: OU=AltSirket,OU=Sirket1</div>
         </div>
 
         <div class="mb-3">

@@ -1,4 +1,4 @@
-from ldap3 import Server, Connection, ALL, MODIFY_REPLACE, MODIFY_ADD
+from ldap3 import Server, Connection, ALL, MODIFY_REPLACE, MODIFY_ADD, SUBTREE
 
 class LDAPHelper:
     def __init__(self, server, user, password, base_dn):
@@ -44,6 +44,20 @@ class LDAPHelper:
             return results
         except Exception as e:
             print(f"Arama Hatası: {e}")
+            return []
+
+    def list_ous(self):
+        conn = self._connect()
+        if not conn:
+            return []
+
+        try:
+            conn.search(search_base=self.base_dn, search_filter='(objectClass=organizationalUnit)', search_scope=SUBTREE, attributes=[])
+            ous = [entry.entry_dn for entry in conn.entries]
+            conn.unbind()
+            return ous
+        except Exception as e:
+            print(f"OU Arama Hatası: {e}")
             return []
 
     def add_user(self, user_dn, object_classes, attributes):

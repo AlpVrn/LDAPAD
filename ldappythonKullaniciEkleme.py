@@ -13,39 +13,42 @@ sn = 'Varna'
 givenName = 'Alp'
 displayName = 'Alp Varna'
 sAMAccountName = 'malp.varna' 
-userPrincipalName = 'malp.varna@adtest.ss' 
-passW = '1'
+userPrincipalName = 'malp.varna@map.tech' 
+passW = 'P@ssw0rd123!'
 
 # --- KONUM BİLGİLERİ ---
 chosenOu = 'Sirket1'
-target_alt_ou = 'IT'
+target_alt_ou = 'AltSirket'
 target_group_cn = 'test-IT'
 
 # --- YÖNETİCİ BİLGİLERİ ---
-manager_cn = 'Alp Mehmet'
-manager_ou = 'IT'
-manager_ana_ou = 'Sirket1'
+manager_cn = ''
+manager_ou = ''
+manager_ana_ou = ''
 
 
 # --- DN TANIMLAMALARI ---
-user_dn = f"CN={cn},OU={target_alt_ou},OU={chosenOu},DC=adtest,DC=ss"
-target_group_dn = f"CN={target_group_cn},OU={target_alt_ou},OU={chosenOu},DC=adtest,DC=ss" 
+user_dn = f"CN={cn},OU={target_alt_ou},OU={chosenOu},DC=map,DC=tech"
+target_group_dn = f"CN={target_group_cn},OU={target_alt_ou},OU={chosenOu},DC=map,DC=tech" 
 
 
 # --- DİNAMİK ATTRIBUTE HAZIRLAMA (MANAGER KONTROLÜ) ---
 # Özellikleri sözlüğe atıyoruz
 ad_attributes = {
-    'cn': cn, 'sn': sn, 'givenName': givenName, 'displayName': displayName,
-    'sAMAccountName': sAMAccountName,   
-    'c': 'TR', 'co': 'Türkiye', 'countryCode': '792', 'mail': 'malp.varna@sirket1.com', 'company': 'Sirket1', 
-    'department': 'Bilgi İşlem', 'description': '', 'homePhone': '1111', 'l': 'İstanbul', 'mobile': '0555 555 55 55',
-    'physicalDeliveryOfficeName': 'Sirket Fiziksel', 'st': 'istanvul', 'streetAddress': 'istanbul',
-    'telephoneNumber': '0555555', 'title': 'IT UZMAN YARDIMCISI',
-    'userAccountControl': ['544'] # Pasif oluşturur
+    'cn': cn, 
+    'sn': sn, 
+    'givenName': givenName, 
+    'displayName': displayName,
+    'sAMAccountName': sAMAccountName,
+    'mail': 'malp.varna@sirket1.com',
+    'company': 'Sirket1',
+    'department': 'Bilgi İşlem',
+    'title': 'IT UZMAN YARDIMCISI',
+    'userAccountControl': 544  # Pasif oluşturur (integer olmalı)
 }
 
 # KONTROL: Yönetici bilgisi dolu mu?
-if manager_cn and "##" not in manager_cn and manager_cn.strip() != "":
+if manager_cn and "##" not in manager_cn and manager_cn.strip() != "":  
     manager_dn = f"CN={manager_cn},OU={manager_ou},OU={manager_ana_ou},DC=adtest,DC=ss"
     ad_attributes['manager'] = manager_dn
     print(f"Bilgi: Yönetici ({manager_cn}) eklenecek.")
@@ -58,7 +61,10 @@ new_password = f'"{passW}"'.encode('utf-16-le')
 
 
 # --- LDAP İŞLEMLERİ (STANDART BAĞLANTI) ---
-server = Server(ldap_server, get_info=ALL)
+if config.LDAP_USE_SSL:
+    server = Server(ldap_server, port=config.LDAP_SSL_PORT, use_ssl=True, get_info=ALL)
+else:
+    server = Server(ldap_server, get_info=ALL)
 conn = Connection(server, user=username, password=password, auto_bind=True)
 
 print(f"### 1. Kullanıcı Ekleniyor: {user_dn} ###")
@@ -78,16 +84,8 @@ else:
     print(f"UPN Sonucu: {conn.result['description']}")
     print("---")
     
-    # 2. Şifre (NOT: Burası SSL olmadığı için hata veriyor önemsiz)
-    print("### 2. Şifre Atanıyor ###")
-    conn.modify(user_dn, {'unicodePwd': [(MODIFY_REPLACE, [new_password])]})
-    print(f"Şifre Sonucu: {conn.result['description']}")
-    print("---")
-
-    # 3. Enable Et (Şifre atanamadığı için burası da hata verebilir)
-    print("### 3. Hesap Aktif Ediliyor ###")
-    conn.modify(user_dn, {'userAccountControl': [(MODIFY_REPLACE, ['512'])]})
-    print(f"Enable Sonucu: {conn.result['description']}")
+    # NOT: Şifre atama ve hesap aktif etme SSL gerektirir. Manuel yapın.
+    print("### NOT: Şifre ve hesap aktif etme manuel yapılacak (SSL gerekli) ###")
     print("---")
 
     # 4. Gruba Ekle

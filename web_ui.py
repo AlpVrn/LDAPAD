@@ -3,7 +3,7 @@ import config
 from ldap_helpers import LDAPHelper
 
 app = Flask(__name__)
-app.secret_key = 'change-me'
+app.secret_key = '3131'
 
 ldap = LDAPHelper(config.LDAP_SERVER, config.LDAP_USER, config.LDAP_PASSWORD, config.BASE_DN)
 
@@ -21,22 +21,37 @@ def add_user():
     if request.method == 'POST':
         # Basit örnek: form üzerinden CN, OU ve birkaç attribute alıyoruz
         cn = request.form.get('cn')
-        ou = request.form.get('ou')
+        ou_select = request.form.get('ou_select')
+        ou_text = request.form.get('ou_text')
         sam = request.form.get('sAMAccountName')
         mail = request.form.get('mail')
 
-        if not cn or not ou or not sam:
-            flash('CN, OU ve sAMAccountName gerekli.', 'warning')
+        if not cn or not sam or not (ou_select or ou_text):
+            flash('CN, OU ve sAMAccountName gerekli. OU seçin veya yazın.', 'warning')
             return redirect(url_for('add_user'))
 
-        user_dn = f"CN={cn},OU={ou},{config.BASE_DN}"
+        ou_value = ou_select.strip() if ou_select else ou_text.strip()
+        if ou_value.upper().startswith('DC='):
+            parent_dn = ou_value
+        elif ou_value.upper().startswith('OU='):
+            parent_dn = ou_value
+        else:
+            parts = [p.strip() for p in ou_value.split(',') if p.strip()]
+            parent_dn = ','.join(f"OU={part}" if not part.upper().startswith('OU=') else part for part in parts)
+
+        if parent_dn:
+            user_dn = f"CN={cn},{parent_dn}" if 'DC=' in parent_dn.upper() else f"CN={cn},{parent_dn},{config.BASE_DN}"
+        else:
+            user_dn = f"CN={cn},{config.BASE_DN}"
+
         object_classes = ['top', 'person', 'organizationalPerson', 'user']
         attributes = {
             'cn': cn,
             'sAMAccountName': sam,
             'displayName': cn,
-            'mail': mail or ''
         }
+        if mail:
+            attributes['mail'] = mail
 
         res = ldap.add_user(user_dn, object_classes, attributes)
         if res['ok']:
@@ -46,7 +61,8 @@ def add_user():
 
         return redirect(url_for('index'))
 
-    return render_template('form_user.html', action='add')
+    ous = ldap.list_ous()
+    return render_template('form_user.html', action='add', ous=ous)
 
 @app.route('/delete', methods=['POST'])
 def delete_user():
