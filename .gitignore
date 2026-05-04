@@ -6,6 +6,9 @@ __pycache__/
 # Secret config (Şifrelerin olduğu dosya)
 config.py
 
+# Requirements file
+requirements.txt
+
 # Excel çıktıları
 *.xlsx
 
