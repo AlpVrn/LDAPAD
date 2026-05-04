@@ -1,0 +1,7 @@
+python ldappytdomainnameOgrenme.py
+python ldappythonKullaniciCekme.py
+python ldappythonKullaniciEkleme.py
+python ldappythonKullaniciGuncelleme.py
+python ldappythonKullaniciSilme.py
+python LDAPSERVERGIREBBILIYORMU.py
+python web_ui.py
