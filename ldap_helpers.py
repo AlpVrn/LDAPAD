@@ -18,7 +18,7 @@ class LDAPHelper:
 
     def list_users(self, attributes=None, search_filter='(objectClass=user)'):
         if attributes is None:
-            attributes = ['cn', 'userPrincipalName', 'mail', 'sAMAccountName', 'displayName', 'description']
+            attributes = ['cn', 'userPrincipalName', 'mail', 'sAMAccountName', 'displayName', 'description', 'title', 'userAccountControl']
 
         conn = self._connect()
         if not conn:
