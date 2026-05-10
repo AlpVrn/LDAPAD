@@ -1,99 +1,57 @@
-# LDAPAD - LDAP Yönetim Arayüzü (Flask)
+# LDAPAD — LDAP Yönetim Arayüzü
 
-Bu proje, LDAP (Lightweight Directory Access Protocol) sunucularını yönetmek için geliştirilmiş bir Python tabanlı web uygulamasıdır. Flask framework'ü kullanarak basit ve kullanıcı dostu bir arayüz sağlar. LDAP kullanıcılarını listeleme, ekleme, güncelleme ve silme işlemlerini web üzerinden gerçekleştirebilirsiniz.
+Flask tabanlı web arayüzü ile Active Directory / LDAP kullanıcılarını yönetin.
 
 ## Özellikler
 
-- **Kullanıcı Listeleme**: LDAP dizinindeki kullanıcıları görüntüleme
-- **Kullanıcı Ekleme**: Yeni kullanıcı oluşturma
-- **Kullanıcı Güncelleme**: Mevcut kullanıcı bilgilerini düzenleme
-- **Kullanıcı Silme**: Kullanıcıları LDAP dizininden kaldırma
-- **Domain Bilgisi Öğrenme**: LDAP sunucusunun domain bilgilerini alma
-- **Sunucu Bağlantı Kontrolü**: LDAP sunucusuna bağlantı testi
-- **Web Arayüzü**: Kolay kullanım için Flask tabanlı web uygulaması
+- **Kullanıcı Listeleme** — Tüm kullanıcıları tablo/kart görünümünde görüntüleme
+- **Aktif/Pasif Filtreleme** — Toplam/Aktif/Pasif kartlarına tıklayarak listeyi filtreleme
+- **Kullanıcı Ekleme** — Yeni kullanıcı oluşturma (OU seçme veya manuel girme)
+- **Kullanıcı Güncelleme** — Mail, ünvan, hesap durumu düzenleme + tüm bilgileri görüntüleme
+- **Kullanıcı Silme** — Kullanıcıları LDAP dizininden kaldırma
+- **Mobil Uyumlu** — Bootstrap ile responsive tasarım, mobilde kart görünümü
+- **İşlem Logları** — Tüm ekleme/silme/güncelleme işlemleri `audit.log` dosyasına kaydedilir
+- **Web'den Ayarlar** — LDAP sunucu bilgilerini arayüzden düzenleme
+- **Otomatik Yenileme** — Kullanıcı listesi 30 saniyede bir otomatik güncellenir
 
 ## Gereksinimler
 
 - Python 3.6+
-- LDAP sunucusu ( Active Directory, OpenLDAP)
-- Gerekli Python paketleri (requirements.txt dosyasında listelenmiştir)
+- Active Directory veya OpenLDAP sunucusu
+- `pip install flask ldap3`
 
-## Kurulum ve Çalıştırma
-
-### 1. Depoyu Klonlayın veya İndirin
-
-Bu projeyi bilgisayarınıza indirin veya klonlayın.
-
-### 2. Yapılandırma Dosyasını Hazırlayın
-
-`config.py.example` dosyasını `config.py` olarak kopyalayın ve LDAP sunucunuzun bilgilerini düzenleyin:
+## Hızlı Başlangıç
 
 ```bash
+git clone https://github.com/AlpVrn/LDAPAD.git
+cd LDAPAD
 cp config.py.example config.py
-```
-
-`config.py` dosyasında aşağıdaki ayarları yapın:
-- `LDAP_SERVER`: LDAP sunucusunun adresi (örneğin: `ldap://your-ldap-server.com`)
-- `LDAP_USER`: LDAP sunucusuna bağlanmak için kullanılan kullanıcı adı (örneğin: `cn=admin,dc=example,dc=com`)
-- `LDAP_PASSWORD`: LDAP kullanıcısının şifresi
-- `BASE_DN`: LDAP dizininin temel ayrıştırılmış adı (örneğin: `dc=example,dc=com`)
-
-**Not**: Güvenlik için gerçek LDAP sunucunuzda SSL/TLS kullanın ve şifreleri güvenli bir şekilde saklayın.
-
-### 3. Gerekli Paketleri Yükleyin
-
-Proje bağımlılıklarını yüklemek için terminalde aşağıdaki komutu çalıştırın:
-
-```bash
+# config.py dosyasını kendi LDAP bilgilerinle düzenle
 pip install -r requirements.txt
-```
-
-Bu komut, aşağıdaki paketleri yükleyecektir:
-- Flask: Web framework
-- ldap3: LDAP protokolü için Python kütüphanesi
-- Diğer gerekli bağımlılıklar
-
-### 4. Uygulamayı Başlatın
-
-Web uygulamasını başlatmak için:
-
-```bash
 python web_ui.py
 ```
 
-Uygulama varsayılan olarak `http://localhost:5000` adresinde çalışacaktır. Tarayıcınızda bu adrese giderek arayüzü kullanabilirsiniz.
-
-## Kullanım
-
-- Ana sayfada mevcut kullanıcıları listeleyebilirsiniz.
-- "Kullanıcı Ekle" formu ile yeni kullanıcı oluşturabilirsiniz.
-- Kullanıcı listesinde "Düzenle" ve "Sil" butonları ile işlemleri gerçekleştirebilirsiniz.
+Tarayıcında `http://localhost:5000` adresine git.
 
 ## Ek Scriptler
 
-Proje klasöründe ayrıca bağımsız scriptler bulunmaktadır:
-- `ldappytdomainnameOgrenme.py`: Domain bilgilerini öğrenme
-- `ldappythonKullaniciCekme.py`: Kullanıcı bilgilerini çekme
-- `ldappythonKullaniciEkleme.py`: Kullanıcı ekleme
-- `ldappythonKullaniciGuncelleme.py`: Kullanıcı güncelleme
-- `ldappythonKullaniciSilme.py`: Kullanıcı silme
-- `LDAPSERVERGIREBBILIYORMU.py`: LDAP sunucu bağlantı testi
+Proje klasöründe bağımsız CLI scriptleri de bulunur:
 
-Bu scriptleri komut satırından çalıştırabilirsiniz (örneğin: `python ldappythonKullaniciCekme.py`).
+| Script | İşlev |
+|---|---|
+| `ldappythonKullaniciCekme.py` | Kullanıcıları listele |
+| `ldappythonKullaniciEkleme.py` | Yeni kullanıcı ekle |
+| `ldappythonKullaniciGuncelleme.py` | Kullanıcı güncelle |
+| `ldappythonKullaniciSilme.py` | Kullanıcı sil |
+| `LDAPSERVERGIREBBILIYORMU.py` | Sunucu bağlantı testi |
+| `ldappytdomainnameOgrenme.py` | Domain bilgisi öğren |
 
-## Güvenlik Notları
+## Güvenlik
 
-- Bu uygulama temel bir örnek olarak geliştirilmiştir.
-  - SSL/TLS sertifikaları kullanın
-  - Şifreleri güvenli şekilde saklayın (örneğin environment variables)
-  - Giriş doğrulama ve yetkilendirme ekleyin
-  - Hata mesajlarını kullanıcı dostu hale getirin
-  - LDAP bağlantılarını güvenli hale getirin
-
-## Katkıda Bulunma
-
-Bu projeye katkıda bulunmak için pull request gönderebilirsiniz
+- `config.py` (şifre vb.) `.gitignore` ile korunur, repo'ya eklenmez
+- SSL/TLS kullanılması önerilir
+- Production ortamında `FLASK_DEBUG = False` yapılmalıdır
 
 ## Lisans
 
-Bu proje açık kaynak kodludur. Detaylar için lisans dosyasına bakın.
+Açık kaynak.
