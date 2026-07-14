@@ -1,4 +1,4 @@
-from ldap3 import Server, Connection, ALL, MODIFY_REPLACE, MODIFY_ADD, SUBTREE
+from ldap3 import Server, Connection, ALL, MODIFY_REPLACE, MODIFY_ADD, SUBTREE, BASE
 
 class LDAPHelper:
     def __init__(self, server, user, password, base_dn):
@@ -18,7 +18,7 @@ class LDAPHelper:
 
     def list_users(self, attributes=None, search_filter='(objectClass=user)'):
         if attributes is None:
-            attributes = ['cn', 'userPrincipalName', 'mail', 'sAMAccountName', 'displayName', 'description', 'title', 'userAccountControl']
+            attributes = ['cn', 'userPrincipalName', 'mail', 'sAMAccountName', 'displayName', 'description', 'title', 'userAccountControl', 'department', 'telephoneNumber', 'mobile', 'co', 'c', 'countryCode', 'l', 'manager']
 
         conn = self._connect()
         if not conn:
@@ -80,3 +80,50 @@ class LDAPHelper:
         result = conn.result
         conn.unbind()
         return {'ok': ok, 'result': result}
+
+    def list_groups(self):
+        conn = self._connect()
+        if not conn:
+            return []
+        try:
+            conn.search(search_base=self.base_dn, search_filter='(objectClass=group)', search_scope=SUBTREE,
+                        attributes=['cn', 'sAMAccountName'])
+            results = []
+            for entry in conn.entries:
+                results.append({'cn': entry.cn.value, 'dn': entry.entry_dn})
+            conn.unbind()
+            return sorted(results, key=lambda x: x['cn'])
+        except Exception as e:
+            print(f"Grup Arama Hatası: {e}")
+            return []
+
+    def list_group_members(self, group_dn):
+        conn = self._connect()
+        if not conn:
+            return []
+        try:
+            conn.search(search_base=group_dn, search_filter='(objectClass=*)', search_scope=BASE,
+                        attributes=['member'])
+            if not conn.entries:
+                conn.unbind()
+                return []
+            members_dns = conn.entries[0].member.values if conn.entries[0].member else []
+            if not members_dns:
+                conn.unbind()
+                return []
+            results = []
+            for member_dn in members_dns:
+                conn.search(search_base=member_dn, search_filter='(objectClass=user)', search_scope=BASE,
+                            attributes=['cn', 'sAMAccountName', 'displayName'])
+                if conn.entries:
+                    e = conn.entries[0]
+                    results.append({
+                        'cn': e.cn.value if e.cn else '',
+                        'dn': e.entry_dn,
+                        'displayName': e.displayName.value if e.displayName else ''
+                    })
+            conn.unbind()
+            return sorted(results, key=lambda x: x['cn'])
+        except Exception as e:
+            print(f"Üye Arama Hatası: {e}")
+            return []

@@ -32,6 +32,17 @@ def users_json():
     users = ldap.list_users()
     return jsonify(users)
 
+@app.route('/api/groups')
+def api_groups():
+    return jsonify(ldap.list_groups())
+
+@app.route('/api/groups/members')
+def api_group_members():
+    group_dn = request.args.get('group_dn')
+    if not group_dn:
+        return jsonify([])
+    return jsonify(ldap.list_group_members(group_dn))
+
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
     if request.method == 'POST':
@@ -106,6 +117,16 @@ def update_user():
         dn = request.form.get('dn')
         mail = request.form.get('mail')
         title = request.form.get('title')
+        description = request.form.get('description')
+        department = request.form.get('department')
+        telephoneNumber = request.form.get('telephoneNumber')
+        mobile = request.form.get('mobile')
+        co = request.form.get('co')
+        CountryCode = request.form.get('CountryCode')
+        c = request.form.get('c')
+        l = request.form.get('l')
+        manager = request.form.get('manager_dn')
+        manager_clear = request.form.get('manager_clear')
         account_status = request.form.get('account_status')
 
         if not dn:
@@ -118,8 +139,28 @@ def update_user():
             modifications['mail'] = [(MODIFY_REPLACE, [mail])]
         if title:
             modifications['title'] = [(MODIFY_REPLACE, [title])]
+        if description:
+            modifications['description'] = [(MODIFY_REPLACE, [description])]
+        if department:
+            modifications['department'] = [(MODIFY_REPLACE, [department])]
+        if telephoneNumber:
+            modifications['telephoneNumber'] = [(MODIFY_REPLACE, [telephoneNumber])]
+        if mobile:
+            modifications['mobile'] = [(MODIFY_REPLACE, [mobile])]
+        if co:
+            modifications['co'] = [(MODIFY_REPLACE, [co])]
+        if CountryCode:
+            modifications['countryCode'] = [(MODIFY_REPLACE, [CountryCode])]
+        if c:
+            modifications['c'] = [(MODIFY_REPLACE, [c])]
+        if l:
+            modifications['l'] = [(MODIFY_REPLACE, [l])]
         if account_status:
             modifications['userAccountControl'] = [(MODIFY_REPLACE, [int(account_status)])]
+        if manager:
+            modifications['manager'] = [(MODIFY_REPLACE, [manager])]
+        elif manager_clear:
+            modifications['manager'] = [(MODIFY_REPLACE, [])]
 
         if not modifications:
             flash('Güncellenecek alan yok.', 'info')
@@ -131,13 +172,24 @@ def update_user():
             changed = []
             if mail: changed.append(f"mail={mail}")
             if title: changed.append(f"title={title}")
+            if description: changed.append(f"description={description}")
+            if department: changed.append(f"department={department}")
+            if telephoneNumber: changed.append(f"telephoneNumber={telephoneNumber}")
+            if mobile: changed.append(f"mobile={mobile}")
+            if co: changed.append(f"co={co}")
+            if CountryCode: changed.append(f"CountryCode={CountryCode}")
+            if c: changed.append(f"c={c}")
+            if l: changed.append(f"l={l}")
             if account_status: changed.append(f"account_status={account_status}")
+            if manager: changed.append(f"manager={manager}")
             log_action('UPDATE', f"dn={dn} changed={', '.join(changed)}")
         else:
             flash(f"Güncelleme hatası: {res['result']}", 'danger')
             log_action('UPDATE_FAILED', f"dn={dn} error={res['result']}")
 
         return redirect(url_for('index'))
+
+    from countries_data import ULKELER
 
     # GET ile gelirse query param 'dn' ile formu doldur
     dn = request.args.get('dn')
@@ -147,7 +199,8 @@ def update_user():
         user = user_info[0] if user_info else {}
     else:
         user = {}
-    return render_template('edit_user.html', dn=dn, user=user)
+    groups = ldap.list_groups()
+    return render_template('edit_user.html', dn=dn, user=user, ulkeler=ULKELER, groups=groups)
 
 @app.route('/logs')
 def view_logs():

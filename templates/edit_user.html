@@ -38,14 +38,65 @@
       <form method="post">
         <input type="hidden" name="dn" value="{{dn}}">
 
-        <div class="mb-3">
-          <label class="form-label">Mail</label>
-          <input name="mail" id="mail" class="form-control" value="{{user.mail or ''}}">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Mail</label>
+            <input name="mail" id="mail" class="form-control" value="{{user.mail or ''}}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Telephone Number</label>
+            <input name="telephoneNumber" class="form-control" value="{{user.telephoneNumber or ''}}">
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Title</label>
-          <input name="title" class="form-control" value="{{user.title or ''}}">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Description</label>
+            <input name="description" class="form-control" value="{{user.description or ''}}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Mobile</label>
+            <input name="mobile" class="form-control" value="{{user.mobile or ''}}">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Department</label>
+            <input name="department" class="form-control" value="{{user.department or ''}}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Title</label>
+            <input name="title" class="form-control" value="{{user.title or ''}}">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Ülke / Country</label>
+            <select id="ulke_select" class="form-select" onchange="selectCountry(this)">
+              <option value="">-- Ülke seçin --</option>
+              {% for u in ulkeler %}
+              <option value="{{u.ad}}">{{u.ad}}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="co" id="co" value="{{user.co or ''}}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Şehir / City</label>
+            <input name="l" class="form-control" value="{{user.l or ''}}">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Ülke Kodu (c)</label>
+            <input name="c" id="c" class="form-control" value="{{user.c or ''}}" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Country Code</label>
+            <input name="CountryCode" id="countryCode" class="form-control" value="{{user.countryCode or ''}}" readonly>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -61,6 +112,33 @@
             </div>
           </div>
           <div class="form-text">Hesap durumu için Aktif/Pasif seçin.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Manager Seçimi</label>
+          <div class="row g-2">
+            <div class="col-md-5">
+              <label class="form-label small text-muted">Grup Seçin</label>
+              <select id="manager_grup" class="form-select" onchange="onGroupChange(this)">
+                <option value="">-- Grup seçin --</option>
+                {% for g in groups %}
+                <option value="{{g.dn}}">{{g.cn}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small text-muted">Kullanıcı Seçin</label>
+              <select id="manager_kullanici" class="form-select" disabled>
+                <option value="">-- Önce grup seçin --</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="clearManager()">Kaldır</button>
+            </div>
+          </div>
+          <input type="hidden" name="manager_dn" id="manager_dn" value="{{user.manager or ''}}">
+          <input type="hidden" name="manager_clear" id="manager_clear" value="">
+          <div class="form-text">Mevcut manager: <strong id="mevcut_manager">{{user.manager or 'Tanımsız'}}</strong></div>
         </div>
 
         <button class="btn btn-primary" type="submit">Güncelle</button>
